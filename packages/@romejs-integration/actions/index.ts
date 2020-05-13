@@ -1,7 +1,10 @@
 import * as core from '@actions/core'
 import * as github from '@actions/github'
 
+import { testLint } from '@romejs/js-compiler/lint/rules/testHelpers'
+
 const run = async (): Promise<void> => {
+	console.log(testLint);
   try {
     const creature = core.getInput('amazing-creature')
     if (creature === 'mosquito') {
