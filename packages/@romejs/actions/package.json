@@ -1,0 +1,6 @@
+{
+    "name": "@romejs/actions",
+    "private": true,
+    "type": "module",
+    "main": "index.ts"
+}

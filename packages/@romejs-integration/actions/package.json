@@ -1,6 +1,0 @@
-{
-    "name": "@romejs-integration/actions",
-    "private": true,
-    "type": "module",
-    "main": "index.ts"
-}

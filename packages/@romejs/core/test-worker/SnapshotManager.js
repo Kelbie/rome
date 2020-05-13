@@ -1,0 +1,295 @@
+"use strict";
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+Object.defineProperty(exports, "__esModule", { value: true });
+const path_1 = require("@romejs/path");
+const fs_1 = require("@romejs/fs");
+const diagnostics_1 = require("@romejs/diagnostics");
+const SnapshotParser_1 = require("./SnapshotParser");
+const pretty_format_1 = require("@romejs/pretty-format");
+function cleanHeading(key) {
+    if (key[0] === '`') {
+        key = key.slice(1);
+    }
+    if (key[key.length - 1] === '`') {
+        key = key.slice(0, -1);
+    }
+    return key.trim();
+}
+exports.SNAPSHOT_EXT = '.test.md';
+function buildEntriesKey(testName, entryName) {
+    return `${testName}#${entryName}`;
+}
+class SnapshotManager {
+    constructor(runner, testPath) {
+        this.defaultSnapshotPath = testPath.getParent().append(`${testPath.getExtensionlessBasename()}${exports.SNAPSHOT_EXT}`);
+        this.testPath = testPath;
+        this.runner = runner;
+        this.options = runner.options;
+        this.snapshots = new path_1.AbsoluteFilePathMap();
+        this.inlineSnapshotsUpdates = [];
+        this.snapshotCounts = {
+            deleted: 0,
+            updated: 0,
+            created: 0,
+        };
+    }
+    normalizeSnapshotPath(filename) {
+        if (filename === undefined) {
+            return this.defaultSnapshotPath;
+        }
+        const path = path_1.createAbsoluteFilePath(filename);
+        const ext = path.getExtensions();
+        if (ext.endsWith(exports.SNAPSHOT_EXT)) {
+            return path;
+        }
+        else {
+            return path.addExtension(exports.SNAPSHOT_EXT);
+        }
+    }
+    async init() {
+        await this.loadSnapshot(this.defaultSnapshotPath);
+    }
+    async emitDiagnostic(metadata) {
+        await this.runner.emitDiagnostic({
+            description: metadata,
+            location: {
+                filename: this.defaultSnapshotPath.join(),
+            },
+        });
+    }
+    async loadSnapshot(path) {
+        if (!(await fs_1.exists(path))) {
+            return;
+        }
+        const content = await fs_1.readFileText(path);
+        const parser = SnapshotParser_1.createSnapshotParser({
+            path,
+            input: content,
+        });
+        const nodes = parser.parse();
+        const snapshot = {
+            existsOnDisk: true,
+            used: false,
+            raw: parser.input,
+            entries: new Map(),
+        };
+        this.snapshots.set(path, snapshot);
+        while (nodes.length > 0) {
+            const node = nodes.shift();
+            if (node.type === 'Heading' && node.level === 1) {
+                // Title
+                continue;
+            }
+            if (node.type === 'Heading' && node.level === 2) {
+                const testName = cleanHeading(node.text);
+                while (nodes.length > 0) {
+                    const node = nodes[0];
+                    if (node.type === 'Heading' && node.level === 3) {
+                        nodes.shift();
+                        const entryName = cleanHeading(node.text);
+                        const codeBlock = nodes.shift();
+                        if (codeBlock === undefined || codeBlock.type !== 'CodeBlock') {
+                            throw parser.unexpected({
+                                description: diagnostics_1.descriptions.SNAPSHOTS.EXPECTED_CODE_BLOCK_AFTER_HEADING,
+                                loc: node.loc,
+                            });
+                        }
+                        snapshot.entries.set(buildEntriesKey(testName, entryName), {
+                            testName,
+                            entryName,
+                            language: codeBlock.language,
+                            value: codeBlock.text,
+                        });
+                        continue;
+                    }
+                    if (node.type === 'CodeBlock') {
+                        nodes.shift();
+                        snapshot.entries.set(buildEntriesKey(testName, '0'), {
+                            testName,
+                            entryName: '0',
+                            language: node.language,
+                            value: node.text,
+                        });
+                    }
+                    break;
+                }
+                continue;
+            }
+        }
+        return snapshot;
+    }
+    buildSnapshot(entries) {
+        // Build the snapshot
+        let lines = [];
+        function pushNewline() {
+            if (lines[lines.length - 1] !== '') {
+                lines.push('');
+            }
+        }
+        lines.push(`# \`${this.testPath.getBasename()}\``);
+        pushNewline();
+        const relativeTestPath = this.runner.projectFolder.relative(this.testPath).join();
+        lines.push(`**DO NOT MODIFY**. This file has been autogenerated. Run \`rome test ${relativeTestPath} --update-snapshots\` to update.`);
+        pushNewline();
+        const testNameToEntries = new Map();
+        for (const entry of entries) {
+            let entriesByTestName = testNameToEntries.get(entry.testName);
+            if (entriesByTestName === undefined) {
+                entriesByTestName = new Map();
+                testNameToEntries.set(entry.testName, entriesByTestName);
+            }
+            entriesByTestName.set(entry.entryName, entry);
+        }
+        // Get test names and sort them so they are in a predictable
+        const testNames = Array.from(testNameToEntries.keys()).sort();
+        for (const testName of testNames) {
+            const entries = testNameToEntries.get(testName);
+            lines.push(`## \`${testName}\``);
+            pushNewline();
+            const entryNames = Array.from(entries.keys()).sort();
+            for (const snapshotName of entryNames) {
+                const entry = entries.get(snapshotName);
+                const { value } = entry;
+                const language = entry.language === undefined ? '' : entry.language;
+                // If the test only has one snapshot then omit the heading
+                const skipHeading = snapshotName === '0' && entryNames.length === 1;
+                if (!skipHeading) {
+                    lines.push(`### \`${snapshotName}\``);
+                }
+                pushNewline();
+                lines.push('```' + language);
+                // TODO escape triple backquotes
+                lines.push(value);
+                lines.push('```');
+                pushNewline();
+            }
+        }
+        return lines;
+    }
+    async save() {
+        // If there'a s focused test then we don't write or validate a snapshot
+        if (this.runner.hasFocusedTests) {
+            return;
+        }
+        const { hasDiagnostics } = this.runner;
+        for (const [path, { used, existsOnDisk, raw, entries }] of this.snapshots) {
+            const lines = this.buildSnapshot(entries.values());
+            const formatted = lines.join('\n');
+            if (this.options.freezeSnapshots) {
+                if (used) {
+                    if (formatted !== raw) {
+                        await this.emitDiagnostic(diagnostics_1.descriptions.SNAPSHOTS.INCORRECT(raw, formatted));
+                    }
+                }
+                else {
+                    await this.emitDiagnostic(diagnostics_1.descriptions.SNAPSHOTS.REDUNDANT);
+                }
+            }
+            else {
+                if (existsOnDisk && !used) {
+                    // Don't delete a snapshot if there are test failures as those failures may be hiding a snapshot usage
+                    if (!hasDiagnostics) {
+                        // If a snapshot wasn't used or is empty then delete it!
+                        await fs_1.unlink(path);
+                        this.snapshotCounts.deleted++;
+                    }
+                }
+                else if (used && formatted !== raw) {
+                    // Fresh snapshot!
+                    await fs_1.writeFile(path, formatted);
+                    if (existsOnDisk) {
+                        this.snapshotCounts.updated++;
+                    }
+                    else {
+                        this.snapshotCounts.created++;
+                    }
+                }
+            }
+        }
+    }
+    testInlineSnapshot(callFrame, received, expected) {
+        let receivedFormat = pretty_format_1.default(received);
+        let expectedFormat;
+        if (typeof expected === 'string') {
+            expectedFormat = expected;
+        }
+        else {
+            expectedFormat = pretty_format_1.default(expected);
+        }
+        // Matches, no need to do anything
+        if (receivedFormat === expectedFormat) {
+            return { status: 'MATCH' };
+        }
+        const shouldSave = this.options.updateSnapshots || expected === undefined;
+        if (shouldSave) {
+            const { lineNumber, columnNumber } = callFrame;
+            if (lineNumber === undefined || columnNumber === undefined) {
+                throw new Error('Call frame has no line or column');
+            }
+            if (!this.options.freezeSnapshots) {
+                let snapshot = receivedFormat;
+                if (typeof received === 'string' ||
+                    typeof received === 'number' ||
+                    typeof received === 'boolean' ||
+                    received === undefined ||
+                    received === null) {
+                    snapshot = received;
+                }
+                this.inlineSnapshotsUpdates.push({
+                    line: lineNumber,
+                    column: columnNumber,
+                    snapshot,
+                });
+            }
+            return { status: 'UPDATE' };
+        }
+        return { status: 'NO_MATCH' };
+    }
+    async get(testName, entryName, optionalFilename) {
+        const snapshotPath = this.normalizeSnapshotPath(optionalFilename);
+        let snapshot = this.snapshots.get(snapshotPath);
+        if (snapshot === undefined) {
+            snapshot = await this.loadSnapshot(snapshotPath);
+        }
+        if (snapshot === undefined) {
+            return undefined;
+        }
+        snapshot.used = true;
+        // If we're force updating, pretend that there was no entry
+        if (this.options.updateSnapshots) {
+            return undefined;
+        }
+        const entry = snapshot.entries.get(buildEntriesKey(testName, entryName));
+        if (entry === undefined) {
+            return undefined;
+        }
+        else {
+            return entry.value;
+        }
+    }
+    set({ testName, entryName, value, language, optionalFilename, }) {
+        const snapshotPath = this.normalizeSnapshotPath(optionalFilename);
+        let snapshot = this.snapshots.get(snapshotPath);
+        if (snapshot === undefined) {
+            snapshot = {
+                raw: '',
+                existsOnDisk: false,
+                used: true,
+                entries: new Map(),
+            };
+            this.snapshots.set(snapshotPath, snapshot);
+        }
+        snapshot.entries.set(buildEntriesKey(testName, entryName), {
+            testName,
+            entryName,
+            language,
+            value,
+        });
+    }
+}
+exports.default = SnapshotManager;
