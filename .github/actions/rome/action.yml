@@ -9,4 +9,4 @@ outputs:
     description: We said something nice, this was what we said.
 runs:
   using: "node12"
-  main: "./index.ts"
+  main: "./index.js"
