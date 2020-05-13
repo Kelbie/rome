@@ -35,7 +35,8 @@
     "dev-rome": "node ./scripts/dev-rome",
     "test": "node ./scripts/dev-rome test",
     "lint": "node ./scripts/dev-rome lint",
-    "fix": "node ./scripts/dev-rome --fix"
+    "fix": "node ./scripts/dev-rome --fix",
+    "build": "tsc"
   },
   "rome": {
     "root": true,
