@@ -20,6 +20,11 @@ import ClientRequest from './ClientRequest';
 import {SharedCommand} from '../common/commands';
 import {MasterQueryResponse} from '../common/bridges/MasterBridge';
 
+import * as core from '@actions/core'
+import * as github from '@actions/github'
+
+core.setOutput('amazing-message', 'message')
+
 export type LocalCommand<Flags extends Dict<unknown>> = SharedCommand<Flags> & {
   callback: (
     req: ClientRequest,
