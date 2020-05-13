@@ -6,7 +6,10 @@
     "node": ">=12.0.0"
   },
   "//": "Look! No deps!",
-  "dependencies": {},
+  "dependencies": {
+    "@actions/core": "^1.2.4",
+    "@actions/github": "^2.2.0"
+  },
   "///": "Only used for static type checking",
   "devDependencies": {
     "@types/node": "^13.13.5",
@@ -14,8 +17,6 @@
     "@types/react-dom": "^16.9.7",
     "@types/vscode": "^1.45.0",
     "typescript": "^3.8.3",
-    "@actions/core": "^1.1.0",
-    "@actions/github": "^1.1.0",
     "@types/jest": "^24.0.18",
     "@types/js-yaml": "^3.12.1",
     "@types/nock": "^11.1.0",
