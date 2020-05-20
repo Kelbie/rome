@@ -647,7 +647,7 @@ export class URLFilePath extends BaseFilePath<URLFilePath> {
 	}
 }
 
-export const HOME_PATH = createAbsoluteFilePath(os.userInfo().homedir);
+export const HOME_PATH = createAbsoluteFilePath("");
 export const TEMP_PATH = createAbsoluteFilePath(os.tmpdir());
 export const CWD_PATH = createAbsoluteFilePath(process.cwd());
 
