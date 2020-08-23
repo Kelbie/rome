@@ -1,7 +1,0 @@
-{
-	"plugins": [
-		"classPrivateProperties",
-		"privateIn"
-	],
-	"throws": true
-}

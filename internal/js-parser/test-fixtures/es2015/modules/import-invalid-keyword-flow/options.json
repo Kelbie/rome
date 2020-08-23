@@ -1,7 +1,0 @@
-{
-	"sourceTypeJS": "module",
-	"plugins": [
-		"flow"
-	],
-	"throws": true
-}
