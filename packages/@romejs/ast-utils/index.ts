@@ -1,1 +1,0 @@
-export {isRoot} from "./isRoot";
