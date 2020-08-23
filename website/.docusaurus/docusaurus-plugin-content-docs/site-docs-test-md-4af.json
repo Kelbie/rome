@@ -1,0 +1,8 @@
+{
+  "id": "test",
+  "title": "test",
+  "description": "# Installation",
+  "source": "@site/docs/test.md",
+  "permalink": "/docs/test",
+  "sidebar": "docs"
+}

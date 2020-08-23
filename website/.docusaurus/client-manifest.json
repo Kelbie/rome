@@ -1,0 +1,204 @@
+{
+  "entrypoints": [
+    "main"
+  ],
+  "origins": {
+    "common": [
+      1,
+      2,
+      4,
+      5,
+      6,
+      7,
+      8,
+      11,
+      12,
+      0
+    ],
+    "styles": [
+      0,
+      2,
+      6,
+      9,
+      10,
+      11,
+      12,
+      1
+    ],
+    "@theme/DocItem": [
+      0,
+      1,
+      2
+    ],
+    "~docs/docs-route-ff2.json": [
+      3
+    ],
+    "@site/docs/community/contributing.md": [
+      0,
+      4
+    ],
+    "@site/docs/introduction/installation.md": [
+      0,
+      5
+    ],
+    "@site/src/pages/index.js": [
+      0,
+      1,
+      6
+    ],
+    "@site/docs/introduction/getting-started.md": [
+      0,
+      7
+    ],
+    "@site/docs/introduction/commands.md": [
+      0,
+      8
+    ],
+    "main": [
+      1,
+      10,
+      9
+    ],
+    "runtime~main": [
+      1,
+      9,
+      10
+    ],
+    "@theme/DocPage": [
+      0,
+      1,
+      11
+    ],
+    "@theme/NotFound": [
+      0,
+      1,
+      12
+    ]
+  },
+  "assets": {
+    "0": {
+      "js": [
+        {
+          "file": "common.299ef12b.js",
+          "hash": "2671627aeae57d607030",
+          "publicPath": "/common.299ef12b.js"
+        }
+      ]
+    },
+    "1": {
+      "css": [
+        {
+          "file": "styles.9ee28e76.css",
+          "hash": "f502c37bc9a836411ee5",
+          "publicPath": "/styles.9ee28e76.css"
+        }
+      ],
+      "js": [
+        {
+          "file": "styles.a80e744e.js",
+          "hash": "f502c37bc9a836411ee5",
+          "publicPath": "/styles.a80e744e.js"
+        }
+      ]
+    },
+    "2": {
+      "js": [
+        {
+          "file": "17896441.9805b762.js",
+          "hash": "bf9a17fa5972ed95bc4f",
+          "publicPath": "/17896441.9805b762.js"
+        }
+      ]
+    },
+    "3": {
+      "js": [
+        {
+          "file": "20ac7829.4f2426eb.js",
+          "hash": "251718298b5db62a491c",
+          "publicPath": "/20ac7829.4f2426eb.js"
+        }
+      ]
+    },
+    "4": {
+      "js": [
+        {
+          "file": "61cc1a3d.cc8ac62c.js",
+          "hash": "7c60d3cba34bea43d42a",
+          "publicPath": "/61cc1a3d.cc8ac62c.js"
+        }
+      ]
+    },
+    "5": {
+      "js": [
+        {
+          "file": "ac68e5b7.6dfe8933.js",
+          "hash": "e8d96121de32cad45c31",
+          "publicPath": "/ac68e5b7.6dfe8933.js"
+        }
+      ]
+    },
+    "6": {
+      "js": [
+        {
+          "file": "c4f5d8e4.b5ff5916.js",
+          "hash": "964856cb380997aee56d",
+          "publicPath": "/c4f5d8e4.b5ff5916.js"
+        }
+      ]
+    },
+    "7": {
+      "js": [
+        {
+          "file": "f048ed9e.1cfab200.js",
+          "hash": "6d5cbf47880ce47de934",
+          "publicPath": "/f048ed9e.1cfab200.js"
+        }
+      ]
+    },
+    "8": {
+      "js": [
+        {
+          "file": "fc2d7e1c.75e2c9a1.js",
+          "hash": "a804feb71875d88b5f7c",
+          "publicPath": "/fc2d7e1c.75e2c9a1.js"
+        }
+      ]
+    },
+    "9": {
+      "js": [
+        {
+          "file": "main.3300016a.js",
+          "hash": "6884de60c5a4e13d72e3",
+          "publicPath": "/main.3300016a.js"
+        }
+      ]
+    },
+    "10": {
+      "js": [
+        {
+          "file": "runtime~main.6a020153.js",
+          "hash": "6c9b5071d0469e32e528",
+          "publicPath": "/runtime~main.6a020153.js"
+        }
+      ]
+    },
+    "11": {
+      "js": [
+        {
+          "file": "11.17f3b391.js",
+          "hash": "ffcbc729d3f2665bace1",
+          "publicPath": "/11.17f3b391.js"
+        }
+      ]
+    },
+    "12": {
+      "js": [
+        {
+          "file": "12.90bfeec1.js",
+          "hash": "91f6b6b9bc68b6cff4ae",
+          "publicPath": "/12.90bfeec1.js"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "name": "@internal/codec-js-regexp",
+  "private": true,
+  "type": "module"
+}

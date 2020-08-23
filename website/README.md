@@ -1,41 +1,27 @@
-# Website
+# [`romefrontend.dev`](https://romefrontend.dev/)
 
-This website is built using [Docusaurus 2](https://v2.docusaurus.io/), a modern static website generator.
-
-### Installation
+## Installation
 
 ```
-$ yarn
+$ npm install
 ```
 
-### Local Development
+## Local Development
 
 ```
-$ yarn start
+$ npm start
 ```
 
-This command starts a local development server and open up a browser window. Most changes are reflected live without having to restart the server.
+This command starts a local development server. Most changes are reflected live without having to restart the server.
 
-### Build
-
-```
-$ yarn build
-```
-
-This command generates static content into the `build` directory and can be served using any static contents hosting service.
-
-### Deployment
+## Build
 
 ```
-$ GIT_USER=<Your GitHub username> USE_SSH=true yarn deploy
+$ npm build
 ```
 
-If you are using GitHub pages for hosting, this command is a convenient way to build the website and push to the `gh-pages` branch.
+This command generates static content into the build directory and can be served using any static contents hosting service.
 
-### Continuous Integration
+## Blog
 
-Some common defaults for linting/formatting have been set for you. If you integrate your project with an open source Continuous Integration system (e.g. Travis CI, CircleCI), you may check for issues using the following command.
-
-```
-$ yarn ci
-```
+All posts should be inside `website/src/blog/posts` in markdown format. The post url slug will be the same as the file name. All posts should have these keys in the front matter: `title`, `descritpion`, `author` and `tags`. The post will only be listed if it have the tag `post`. Others tags can be added and pages for those tags will be auto generated. `date` on the front matter is optional, if not set, the date of the file creation will be used.

@@ -1,0 +1,6 @@
+{
+  "name": "@internal/cli-flags",
+  "private": true,
+  "type": "module",
+  "main": "index.ts"
+}

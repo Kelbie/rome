@@ -1,0 +1,25 @@
+{
+  "/": {
+    "component": "c4f5d8e4"
+  },
+  "/docs/:route": {
+    "component": "1be78505",
+    "docsMetadata": "20ac7829"
+  },
+  "/docs/community/contributing": {
+    "component": "17896441",
+    "content": "61cc1a3d"
+  },
+  "/docs/introduction/commands": {
+    "component": "17896441",
+    "content": "fc2d7e1c"
+  },
+  "/docs/introduction/getting-started": {
+    "component": "17896441",
+    "content": "f048ed9e"
+  },
+  "/docs/introduction/installation": {
+    "component": "17896441",
+    "content": "ac68e5b7"
+  }
+}

@@ -1,0 +1,11 @@
+filename: "file.ts"
+invalid: [
+	"const foo = `bar`"
+	"const foo = `bar `"
+]
+valid: [
+	"const foo = `bar
+`"
+	"const foo = `\"bar\"`"
+	"const foo = `'bar'`"
+]

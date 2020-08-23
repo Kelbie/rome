@@ -2,61 +2,60 @@ name: CI
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
     branches:
-      - master
+      - main
 
 jobs:
-  typescript:
+  lint:
+    name: rome ci (ubuntu-latest)
     runs-on: ubuntu-latest
-    name: TypeScript check
 
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
-          node-version: '13.x'
+          node-version: '12.8.1'
+      - name: rome ci
+        run: ./rome ci
+
+  tests:
+    name: rome test
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest]
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '12.8.1'
+      - name: rome test
+        run: ./rome test --freeze-snapshots
+
+  typescript:
+    runs-on: ubuntu-latest
+    name: TypeScript Check
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '12.8.1'
       - name: Run TypeScript
         run: node ./node_modules/.bin/tsc --noEmit
 
-  lint:
-    name: Lint
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
-        with:
-          node-version: '13.x'
-      - name: Run Rome lint
-        run: node scripts/dev-rome lint
-
   generated:
-    name: Generated files check
+    name: Generated Files Check
     runs-on: ubuntu-latest
-    needs: [lint]
 
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
-          node-version: '13.x'
+          node-version: '12.8.1'
       - name: Check if generated files need to be updated
-        run: node scripts/assert-generated
-
-  tests:
-    name: Tests
-    needs: [typescript, lint]
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
-        with:
-          node-version: '13.x'
-      - name: Run Rome test
-        run: node scripts/dev-rome test --freeze-snapshots
+        run: ./rome run scripts/generate-all-files

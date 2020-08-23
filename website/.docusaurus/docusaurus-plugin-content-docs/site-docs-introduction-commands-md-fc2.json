@@ -1,0 +1,17 @@
+{
+  "id": "introduction/commands",
+  "title": "Commands",
+  "description": "Detailed description of the available commands.",
+  "source": "@site/docs/introduction/commands.md",
+  "permalink": "/docs/introduction/commands",
+  "sidebar_label": "Commands",
+  "sidebar": "docs",
+  "previous": {
+    "title": "Getting Started",
+    "permalink": "/docs/introduction/getting-started"
+  },
+  "next": {
+    "title": "Contributing",
+    "permalink": "/docs/community/contributing"
+  }
+}

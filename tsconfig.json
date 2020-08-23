@@ -1,34 +1,42 @@
 {
-  "compilerOptions": {
-    "target": "esnext",
-    "strict": true,
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "jsx": "react",
-    "resolveJsonModule": true,
-    "noImplicitAny": true,
-    "allowSyntheticDefaultImports": true,
-    "downlevelIteration": true,
-    "noUnusedLocals": true,
-    "noFallthroughCasesInSwitch": true,
-    "noImplicitReturns": true,
-    "typeRoots": ["./node_modules/@types"],
-    "lib": ["dom", "es2020"],
-    "baseUrl": ".",
-    "paths": {
-      "@romejs/*": ["packages/@romejs/*"],
-      "@romejs-web/*": ["packages/@romejs-web/*"],
-      "@romejs-runtime/*": ["packages/@romejs-runtime/*"],
-      "*": ["packages/@romejs-runtime/*"]
-    }
-  },
-
-  "exclude": [
-    "node_modules",
-    "vendor",
-    "type-libs",
-    "scripts",
-    "test-fixtures",
-    "packages/@romejs/js-parser/test-fixtures"
-  ]
+	"compilerOptions": {
+		"noEmit": true,
+		"target": "esnext",
+		"strict": true,
+		"module": "commonjs",
+		"moduleResolution": "node",
+		"jsx": "react",
+		"resolveJsonModule": true,
+		"noImplicitAny": true,
+		"allowSyntheticDefaultImports": true,
+		"downlevelIteration": true,
+		"noUnusedLocals": true,
+		"noFallthroughCasesInSwitch": true,
+		"noImplicitReturns": true,
+		"typeRoots": [
+			"./node_modules/@types"
+		],
+		"lib": [
+			"dom",
+			"es2020"
+		],
+		"baseUrl": ".",
+		"paths": {
+			"@internal/*": [
+				"internal/*"
+			],
+			"@internal/virtual-*": [
+				"internal/virtual-packages/*"
+			],
+			"rome": [
+				"internal/virtual-packages/rome"
+			]
+		}
+	},
+	"exclude": [
+		"node_modules",
+		"vendor",
+		"type-libs",
+		"**/test-fixtures/**/*"
+	]
 }

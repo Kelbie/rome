@@ -1,4 +1,5 @@
 node_modules
 build
-.docusaurus
-.cache-loader
+
+# Auto generated
+src/_includes/styles

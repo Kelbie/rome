@@ -1,0 +1,7 @@
+{
+  "id": "index",
+  "title": "index",
+  "description": "# Installation",
+  "source": "@site/docs/index.md",
+  "permalink": "/docs/index"
+}

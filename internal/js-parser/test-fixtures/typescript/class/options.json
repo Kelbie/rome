@@ -1,0 +1,6 @@
+{
+  "sourceTypeJS": "module",
+  "plugins": [
+    "classPrivateProperties"
+  ]
+}
